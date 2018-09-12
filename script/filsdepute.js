@@ -1,10 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
-	var buttons = document.getElementById('project-list').childNodes;
+	var currentSection = location.pathname.split('/').filter(function (p) {
+		return p
+	})[0];
+	if (currentSection) {
+		history.replaceState(currentSection, currentSection, location.href)
+		showProject(currentSection)
+	}
+
+	var buttons = document.getElementById('project-list').children;
 	for (var i = 0; i < buttons.length; i++) {
-		buttons[i].addEventListener('click', function (event) {
-			var projectId = event.target.getAttribute('data-project-id');
-			showProjectMaker(projectId)();
-		})
+		var currentButton = buttons[i]
+		currentButton.addEventListener('click', showProjectMaker(currentButton.getAttribute('data-project-id')))
 	}
 	var logo = document.getElementById('logo');
 	logo.addEventListener('click', hideProjects);
@@ -68,5 +74,7 @@ function hideMenu() {
 }
 
 window.onpopstate = function (event) {
-	showProject(event.state)
+	event.state ?
+		showProject(event.state) :
+		hideProjects()
 }
