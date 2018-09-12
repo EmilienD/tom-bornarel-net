@@ -74,7 +74,10 @@ function hideMenu() {
 }
 
 window.onpopstate = function (event) {
-	event.state ?
-		showProject(event.state) :
+	if (event.state) {
+		showProject(event.state)
+	} else {
 		hideProjects()
+		showMenu()
+	}
 }
