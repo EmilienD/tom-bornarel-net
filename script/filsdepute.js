@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 	var buttons = document.getElementById('project-list').childNodes;
-	for(var i = 0; i<buttons.length; i++) {
-		buttons[i].addEventListener('click', function(event){
+	for (var i = 0; i < buttons.length; i++) {
+		buttons[i].addEventListener('click', function (event) {
 			var projectId = event.target.getAttribute('data-project-id');
-			showProject(projectId);
+			showProjectMaker(projectId)();
 		})
 	}
 	var logo = document.getElementById('logo');
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function hideProjects() {
 	var projects = document.getElementsByClassName('project-container');
-	for(var j = 0; j<projects.length; j = j + 1) {
+	for (var j = 0; j < projects.length; j = j + 1) {
 		projects[j].style.display = 'none';
 	}
 	isAProjectSelected = false;
@@ -33,22 +33,25 @@ function showProject(projectId) {
 	hideProjects();
 	hideMenu();
 	document.getElementById(projectId).style.display = 'block';
-	isAProjectSelected= true;
+	isAProjectSelected = true;
 }
 
 function showProjectMaker(projectId) {
-	return function() { showProject(projectId); }
+	return function () {
+		history.pushState(projectId, projectId, location.origin + '/' + projectId)
+		showProject(projectId);
+	}
 }
 
 var isMenuVisible = true;
 var isAProjectSelected = false;
 
-function togglemenu(){
+function togglemenu() {
 	console.log(isMenuVisible)
 	isMenuVisible && isAProjectSelected ? hideMenu() : showMenu();
 }
 
-function showMenu(){
+function showMenu() {
 	var leftPane = document.getElementsByClassName('left-pane')[0];
 	var rightPane = document.getElementsByClassName('right-pane')[0];
 	leftPane.classList.remove('mobile-invisible');
@@ -56,10 +59,14 @@ function showMenu(){
 	isMenuVisible = true;
 }
 
-function hideMenu(){
+function hideMenu() {
 	var leftPane = document.getElementsByClassName('left-pane')[0];
 	leftPane.classList.add('mobile-invisible')
 	var rightPane = document.getElementsByClassName('right-pane')[0];
 	rightPane.classList.remove('mobile-invisible');
 	isMenuVisible = false;
+}
+
+window.onpopstate = function (event) {
+	showProject(event.state)
 }
